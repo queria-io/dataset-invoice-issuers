@@ -1,0 +1,33 @@
+version: 2
+
+models:
+  - name: issuers
+    columns:
+      - name: registration_number
+        data_tests: [unique, not_null]
+      - name: corporate_number
+        data_tests: [unique]
+      - name: entity_type
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [corporation, association]
+      - name: country
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["1", "2", "3"]
+      - name: process
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["01", "02", "03", "04"]
+      - name: registration_date
+        data_tests: [not_null]
+      - name: is_registered
+        data_tests: [not_null]
+      - name: name
+        data_tests: [not_null]

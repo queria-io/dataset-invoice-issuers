@@ -1,0 +1,71 @@
+schema: main
+name: issuers
+title: 適格請求書発行事業者（法人・人格のない社団等）
+description: |-
+  国税庁の適格請求書発行事業者公表サイトの全件データのうち、法人と人格のない社団等です。1 行が 1 登録番号で、登録が失効・取消になった事業者も含みます。
+
+  - 前月末時点のデータで、毎月作り直します（file_date が基準日）
+  - 個人事業者は含みません
+  - 法人の登録番号は「T + 法人番号」です。corporate_number で houjin_bangou と結合できます
+  - 登録の状態は is_registered で判定できます。基準日より後の登録日・失効日も入っているので、ほかの日の状態は日付の列から判定してください
+primary_key: [registration_number]
+sources:
+  - path: https://www.invoice-kohyo.nta.go.jp/download/zenken
+fields:
+  - name: registration_number
+    title: 登録番号
+    description: T + 13 桁
+  - name: corporate_number
+    title: 法人番号
+    description: 13 桁。法人の行だけに入る。人格のない社団等は NULL
+    annotations: { queria: { semantic: { role: entity, name: corporate_number } } }
+  - name: entity_type
+    title: 事業者の種類
+    description: corporation（法人）・association（人格のない社団等）
+  - name: country
+    title: 国内外区分
+    description: 1=国内事業者、2=特定国外事業者、3=特定国外事業者以外の国外事業者
+  - name: process
+    title: 事業者処理区分
+    description: 最後の処理。01=新規、02=公表内容の変更、03=登録の失効、04=登録の取消
+  - name: registration_date
+    title: 登録年月日
+  - name: update_date
+    title: 更新年月日
+    description: 国税庁のシステムで情報を更新した日
+  - name: disposal_date
+    title: 取消年月日
+  - name: expire_date
+    title: 失効年月日
+    description: 失効の届出があると、失効する前から入る
+  - name: is_registered
+    title: 登録中
+    description: file_date の時点で、登録年月日を過ぎ、取消・失効していなければ true
+  - name: name
+    title: 名称
+  - name: name_kana
+    title: 名称（カナ）
+    description: 国外事業者だけに入る
+  - name: address
+    title: 本店又は主たる事務所の所在地
+    description: 人格のない社団等は、公表を申し出た事業者だけに入る。国外事業者は国外の所在地
+  - name: prefecture_code
+    title: 都道府県コード
+    description: 2 桁（JIS X 0401）
+    annotations: { queria: { semantic: { role: entity, name: prefecture } } }
+  - name: city_code
+    title: 市区町村コード
+    description: 3 桁（JIS X 0402 の市区町村の部分）
+  - name: lg_code
+    title: 全国地方公共団体コード
+    description: 6 桁（検査数字付き）。所在地のコード
+    annotations: { queria: { semantic: { role: entity, name: city } } }
+  - name: domestic_office_address
+    title: 国内の事務所の所在地
+    description: 特定国外事業者以外の国外事業者が、国内で資産の譲渡等を行う事務所の所在地
+  - name: domestic_office_lg_code
+    title: 国内の事務所の全国地方公共団体コード
+    description: 6 桁（検査数字付き）
+  - name: file_date
+    title: 基準日
+    description: 全件データのファイル名にある作成年月日（前月末の稼働日）

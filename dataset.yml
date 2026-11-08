@@ -1,0 +1,45 @@
+# この dataset.yml は fdl commit が読む（FDL の dataset.json を YAML で書いたもの）。
+# 表の説明は models/ の *.table.yml に書く。表と列の型・NULL・行数は fdl commit がカタログから埋める。
+name: invoice_issuers
+title: 適格請求書発行事業者
+description: |-
+  国税庁の適格請求書発行事業者公表サイトの全件データのうち、法人と人格のない社団等の登録番号・名称・所在地・登録年月日・失効年月日・取消年月日です。失効・取消になった事業者も含み、毎月更新します。法人番号で法人番号のデータセットと結合できます。個人事業者は含みません。
+
+  出典：国税庁適格請求書発行事業者公表サイト（国税庁）（https://www.invoice-kohyo.nta.go.jp/download/zenken）を加工して作成
+keywords:
+  - インボイス
+  - インボイス制度
+  - 適格請求書
+  - 適格請求書発行事業者
+  - 登録番号
+  - 法人番号
+  - 消費税
+  - 国税庁
+homepage: https://github.com/queria-io/dataset-invoice-issuers
+language: ja
+
+licenses:
+  - JP-PDL-1.0
+
+sources:
+  - title: 国税庁適格請求書発行事業者公表サイト 全件データのダウンロード
+    path: https://www.invoice-kohyo.nta.go.jp/download/zenken
+  - title: リソース定義書（ダウンロードファイル、Web-API機能）
+    path: https://www.invoice-kohyo.nta.go.jp/files/k-resource-dl.pdf
+
+contributors:
+  - title: 国税庁
+    path: https://www.nta.go.jp/
+    roles: [rightsHolder]
+
+spatial_coverage: [JP]
+update_frequency: monthly
+
+schemas:
+  - name: main
+    title: 適格請求書発行事業者
+
+annotations:
+  queria:
+    themes: [economy]
+    cover: 🧾
