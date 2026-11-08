@@ -1,0 +1,16 @@
+name: "invoice_issuers"
+version: "1.0.0"
+
+profile: "invoice_issuers"
+
+model-paths: ["models"]
+macro-paths: ["shared/macros"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  invoice_issuers:
+    +database: invoice_issuers
+    +materialized: table
