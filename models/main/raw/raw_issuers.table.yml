@@ -1,4 +1,0 @@
-schema: main
-name: raw_issuers
-description: 適格請求書発行事業者の全件データ（取得したままの CSV、全列が文字列、最新でない履歴の行も含む）
-annotations: { queria: { published: false } }
