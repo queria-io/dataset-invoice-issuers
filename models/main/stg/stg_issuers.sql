@@ -1,47 +1,9 @@
-{# 全件データ (data/invoice/*.csv) の最新情報の行を型付けする。1 行が 1 登録番号。
-   列の並びは国税庁「リソース定義書（ダウンロードファイル、Web-API機能）」の項番 7〜30。
-   最新履歴が 0 の行は、登録番号と日付のほかが空なので落とす #}
+{# 全件データの行を型付けする。最新履歴が 0 の行は、登録番号と日付のほかが空 #}
 
-with source as (
-    select *
-    from read_csv(
-        'data/invoice/*.csv',
-        header = false,
-        quote = '"',
-        filename = true,
-        columns = {
-            'sequence_number': 'VARCHAR',
-            'registration_number': 'VARCHAR',
-            'process': 'VARCHAR',
-            'correct': 'VARCHAR',
-            'kind': 'VARCHAR',
-            'country': 'VARCHAR',
-            'latest': 'VARCHAR',
-            'registration_date': 'VARCHAR',
-            'update_date': 'VARCHAR',
-            'disposal_date': 'VARCHAR',
-            'expire_date': 'VARCHAR',
-            'address': 'VARCHAR',
-            'address_prefecture_code': 'VARCHAR',
-            'address_city_code': 'VARCHAR',
-            'address_request': 'VARCHAR',
-            'address_request_prefecture_code': 'VARCHAR',
-            'address_request_city_code': 'VARCHAR',
-            'kana': 'VARCHAR',
-            'name': 'VARCHAR',
-            'address_inside': 'VARCHAR',
-            'address_inside_prefecture_code': 'VARCHAR',
-            'address_inside_city_code': 'VARCHAR',
-            'trade_name': 'VARCHAR',
-            'popular_name_previous_name': 'VARCHAR'
-        }
-    )
-    where latest = '1'
-),
-
-typed as (
+with typed as (
     select
         registration_number,
+        latest = '1' as is_latest,
         -- ファイル名の先頭が h なら法人、j なら人格のない社団等
         starts_with(parse_filename(filename), 'h_') as is_corporation,
         cast(strptime(regexp_extract(parse_filename(filename), '_all_(\d{8})', 1), '%Y%m%d') as date) as file_date,
@@ -59,11 +21,12 @@ typed as (
         coalesce(nullif(address_city_code, ''), nullif(address_request_city_code, '')) as city_code,
         nullif(address_inside, '') as domestic_office_address,
         nullif(address_inside_prefecture_code, '') || nullif(address_inside_city_code, '') as domestic_office_city_code
-    from source
+    from {{ ref('raw_issuers') }}
 )
 
 select
     registration_number,
+    is_latest,
     -- 法人の登録番号は T + 法人番号。人格のない社団等は法人番号を持たないこともあり、区別できないので入れない
     case when is_corporation then substr(registration_number, 2) end as corporate_number,
     case when is_corporation then 'corporation' else 'association' end as entity_type,
