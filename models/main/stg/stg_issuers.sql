@@ -20,7 +20,8 @@ with typed as (
         coalesce(nullif(address_prefecture_code, ''), nullif(address_request_prefecture_code, '')) as prefecture_code,
         coalesce(nullif(address_city_code, ''), nullif(address_request_city_code, '')) as city_code,
         nullif(address_inside, '') as domestic_office_address,
-        nullif(address_inside_prefecture_code, '') || nullif(address_inside_city_code, '') as domestic_office_city_code
+        nullif(address_inside_prefecture_code, '') || nullif(address_inside_city_code, '') as domestic_office_city_code,
+        filename as source_path
     from {{ ref('raw_issuers') }}
 )
 
@@ -47,5 +48,6 @@ select
     {{ local_government_code('prefecture_code || city_code') }} as lg_code,
     domestic_office_address,
     {{ local_government_code('domestic_office_city_code') }} as domestic_office_lg_code,
-    file_date
+    file_date,
+    source_path
 from typed

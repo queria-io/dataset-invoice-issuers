@@ -6,20 +6,23 @@
 ダウンロードのリンクは毎月変わる管理番号を持つので、全件データのページから
 CSV のリンクを読み取る。
 
-出力: data/invoice/{h,j}_all_<作成年月日>[_<一連番号>].csv
+出力:
+- data/invoice/{h,j}_all_<作成年月日>[_<一連番号>].csv
+- data/invoice/source_file.parquet（取得した zip の記録。zip 本体は残さない）
 
 データソース: 国税庁 適格請求書発行事業者公表サイト
 https://www.invoice-kohyo.nta.go.jp/download/zenken
 """
 
-import io
 import logging
 import re
 import shutil
+import tempfile
 import zipfile
 from pathlib import Path
 
-from shared.fetch import fetch
+from pipelines.source_file import write_source_files
+from shared.fetch import fetch, fetch_file
 
 logger = logging.getLogger("pipelines")
 
@@ -42,9 +45,9 @@ def list_files(page: str) -> list[tuple[str, str]]:
     ]
 
 
-def extract_csv(body: bytes, directory: Path) -> list[str]:
+def extract_csv(path: Path, directory: Path) -> list[str]:
     """zip から CSV だけを directory に書き、書いたファイル名を返す。署名 (.asc) は捨てる。"""
-    with zipfile.ZipFile(io.BytesIO(body)) as archive:
+    with zipfile.ZipFile(path) as archive:
         names = [name for name in archive.namelist() if FILE_NAME.fullmatch(name)]
         for name in names:
             (directory / name).write_bytes(archive.read(name))
@@ -61,15 +64,23 @@ def download_invoice() -> None:
     partial = OUTPUT.with_name(OUTPUT.name + ".part")
     shutil.rmtree(partial, ignore_errors=True)
     partial.mkdir(parents=True)
-    for number, kind in files:
+    def one(number: str, kind: str, tmp: Path) -> dict:
         url = f"{SITE}/download/zenken/dlfile?dlFilKanriNo={number}&jinkakukbn={kind}&type={CSV_TYPE}"
-        names = extract_csv(fetch(url, user_agent=USER_AGENT, timeout=300), partial)
+        archive = tmp / f"{number}_{kind}.zip"
+        source = fetch_file(url, archive, user_agent=USER_AGENT, timeout=300)
+        names = extract_csv(archive, partial)
+        archive.unlink()
         if not names:
             raise SystemExit(f"zip に CSV が無い: {url}")
         logger.info("  %s: %s", KINDS[kind], ", ".join(names))
+        return {**source, "page_url": f"{SITE}/download/zenken", "paths": [str(OUTPUT / n) for n in names]}
 
-    dates = {path.name.split("_")[2][:8] for path in partial.iterdir()}
+    with tempfile.TemporaryDirectory() as tmp:
+        sources = [one(number, kind, Path(tmp)) for number, kind in files]
+
+    dates = {path.name.split("_")[2][:8] for path in partial.glob("*.csv")}
     if len(dates) != 1:
         raise SystemExit(f"作成年月日の違うファイルが混ざっている: {sorted(dates)}")
+    write_source_files(sources, partial / "source_file.parquet")
     shutil.rmtree(OUTPUT, ignore_errors=True)
     partial.rename(OUTPUT)

@@ -69,3 +69,6 @@ fields:
   - name: file_date
     title: 基準日
     description: 全件データのファイル名にある作成年月日（前月末の稼働日）
+  - name: source_sha256
+    title: 元のファイルの SHA-256
+    description: この行を読んだファイルの SHA-256 です。source_file の sha256 に当たります
