@@ -13,4 +13,10 @@ clean-targets:
 models:
   invoice_issuers:
     +database: invoice_issuers
-    +materialized: table
+    main:
+      raw:
+        +materialized: table
+      stg:
+        +materialized: view
+      mart:
+        +materialized: table
