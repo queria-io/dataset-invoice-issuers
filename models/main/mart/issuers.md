@@ -1,5 +1,6 @@
-schema: main
-name: issuers
+---
+$schema: https://queria.io/schemas/table/v1.json
+table: main.issuers
 title: 適格請求書発行事業者（法人・人格のない社団等）
 description: |-
   国税庁の適格請求書発行事業者公表サイトの全件データのうち、法人と人格のない社団等です。1 行が 1 登録番号で、登録が失効・取消になった事業者も含みます。
@@ -18,7 +19,7 @@ fields:
   - name: corporate_number
     title: 法人番号
     description: 13 桁。法人の行だけに入る。人格のない社団等は NULL
-    annotations: { queria: { semantic: { role: entity, name: corporate_number } } }
+    semantic: {role: entity, name: corporate_number}
   - name: entity_type
     title: 事業者の種類
     description: corporation（法人）・association（人格のない社団等）
@@ -52,14 +53,14 @@ fields:
   - name: prefecture_code
     title: 都道府県コード
     description: 2 桁（JIS X 0401）
-    annotations: { queria: { semantic: { role: entity, name: prefecture } } }
+    semantic: {role: entity, name: prefecture}
   - name: city_code
     title: 市区町村コード
     description: 3 桁（JIS X 0402 の市区町村の部分）
   - name: lg_code
     title: 全国地方公共団体コード
     description: 6 桁（検査数字付き）。所在地のコード
-    annotations: { queria: { semantic: { role: entity, name: city } } }
+    semantic: {role: entity, name: city}
   - name: domestic_office_address
     title: 国内の事務所の所在地
     description: 特定国外事業者以外の国外事業者が、国内で資産の譲渡等を行う事務所の所在地
@@ -72,3 +73,4 @@ fields:
   - name: source_sha256
     title: 元のファイルの SHA-256
     description: この行を読んだファイルの SHA-256 です。source_file の sha256 に当たります
+---
