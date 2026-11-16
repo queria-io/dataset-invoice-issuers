@@ -1,5 +1,4 @@
-# この dataset.yml は fdl commit が読む（FDL の dataset.json を YAML で書いたもの）。
-# 表の説明は models/ の *.table.yml に書く。表と列の型・NULL・行数は fdl commit がカタログから埋める。
+$schema: https://queria.io/schemas/dataset/v1.json
 name: invoice_issuers
 title: 適格請求書発行事業者
 description: |-
@@ -17,7 +16,6 @@ keywords:
   - 国税庁
 homepage: https://github.com/queria-io/dataset-invoice-issuers
 language: ja
-
 licenses:
   - JP-PDL-1.0
 
@@ -34,12 +32,9 @@ contributors:
 
 spatial_coverage: [JP]
 update_frequency: monthly
-
 schemas:
   - name: main
     title: 適格請求書発行事業者
 
-annotations:
-  queria:
-    themes: [economy]
-    cover: 🧾
+themes: [economy]
+cover: 🧾
