@@ -15,7 +15,6 @@ topics:
   - 法人番号
   - 消費税
   - 国税庁
-homepage: https://github.com/queria-io/dataset-invoice-issuers
 language: ja
 licenses:
   - JP-PDL-1.0
