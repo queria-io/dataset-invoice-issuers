@@ -1,11 +1,11 @@
-$schema: https://queria.io/schemas/dataset/v1.json
+$schema: https://tabledoc.queria.io/schemas/dataset/v1.json
 name: invoice_issuers
 title: 適格請求書発行事業者
 description: |-
   国税庁の適格請求書発行事業者公表サイトの全件データのうち、法人と人格のない社団等の登録番号・名称・所在地・登録年月日・失効年月日・取消年月日です。失効・取消になった事業者も含み、毎月更新します。法人番号で法人番号のデータセットと結合できます。個人事業者は含みません。
 
   出典：国税庁適格請求書発行事業者公表サイト（国税庁）（https://www.invoice-kohyo.nta.go.jp/download/zenken）を加工して作成
-keywords:
+topics:
   - インボイス
   - インボイス制度
   - 適格請求書
@@ -20,13 +20,16 @@ licenses:
   - JP-PDL-1.0
 
 sources:
-  - title: 国税庁適格請求書発行事業者公表サイト 全件データのダウンロード
+  - id: zenken
+    title: 国税庁適格請求書発行事業者公表サイト 全件データのダウンロード
     path: https://www.invoice-kohyo.nta.go.jp/download/zenken
-  - title: リソース定義書（ダウンロードファイル、Web-API機能）
+  - id: k-resource-dl
+    title: リソース定義書（ダウンロードファイル、Web-API機能）
     path: https://www.invoice-kohyo.nta.go.jp/files/k-resource-dl.pdf
 
 contributors:
-  - title: 国税庁
+  - id: nta
+    title: 国税庁
     path: https://www.nta.go.jp/
     roles: [rightsHolder]
 
@@ -35,6 +38,3 @@ update_frequency: monthly
 schemas:
   - name: main
     title: 適格請求書発行事業者
-
-themes: [economy]
-cover: 🧾
