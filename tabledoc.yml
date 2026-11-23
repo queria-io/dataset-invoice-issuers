@@ -38,4 +38,3 @@ update_frequency: monthly
 schemas:
   - name: main
     title: 適格請求書発行事業者
-
