@@ -23,15 +23,15 @@ licenses:
 sources:
   - id: zenken
     title: 国税庁適格請求書発行事業者公表サイト 全件データのダウンロード
-    path: https://www.invoice-kohyo.nta.go.jp/download/zenken
+    url: https://www.invoice-kohyo.nta.go.jp/download/zenken
   - id: k-resource-dl
     title: リソース定義書（ダウンロードファイル、Web-API機能）
-    path: https://www.invoice-kohyo.nta.go.jp/files/k-resource-dl.pdf
+    url: https://www.invoice-kohyo.nta.go.jp/files/k-resource-dl.pdf
 
 contributors:
   - id: nta
     title: 国税庁
-    path: https://www.nta.go.jp/
+    url: https://www.nta.go.jp/
     roles: [rightsHolder]
 
 spatial_coverage: [JP]
