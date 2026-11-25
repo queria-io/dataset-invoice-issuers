@@ -24,6 +24,7 @@ columns:
   - name: country
     title: 国内外区分
     description: 1=国内事業者、2=特定国外事業者、3=特定国外事業者以外の国外事業者
+    dimension: categorical
   - name: process
     title: 事業者処理区分
     description: 最後の処理。01=新規、02=公表内容の変更、03=登録の失効、04=登録の取消
